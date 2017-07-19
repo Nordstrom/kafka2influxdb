@@ -321,6 +321,8 @@ func (c *GConfig) getSaramaConf() (*sarama.Config, error) {
 	var tlsConfigPtr *tls.Config = nil
 	var err error
 	conf := sarama.NewConfig()
+	conf.Metadata.Retry.Max = 100000
+	conf.Metadata.RefreshFrequency = 1000000000000
 	conf.Consumer.Return.Errors = true
 	if c.Kafka.Offset == "newest" {
 		conf.Consumer.Offsets.Initial = sarama.OffsetNewest
@@ -367,6 +369,9 @@ func (c *GConfig) getSaramaClusterConf() (*cluster.Config, error) {
 		return nil, err
 	}
 	cluster_conf := cluster.NewConfig()
+	cluster_conf.Metadata.Retry.Max = 100000
+	cluster_conf.Metadata.RefreshFrequency = 1000000000000
+
 	if c.Kafka.Strategy != "" {
 		cluster_conf.Group.PartitionStrategy = cluster.StrategyRoundRobin
 	}
